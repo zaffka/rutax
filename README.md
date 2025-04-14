@@ -2,7 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/zaffka/rutax.svg)](https://pkg.go.dev/github.com/zaffka/rutax)
 [![Go Report Card](https://goreportcard.com/badge/github.com/zaffka/rutax)](https://goreportcard.com/report/github.com/zaffka/rutax)
-[![Tests](https://github.com/zaffka/rutax/actions/workflows/tests.yml/badge.svg)](https://github.com/zaffka/rutax/actions/workflows/tests.yml)
+[![Tests](https://github.com/zaffka/rutax/actions/workflows/tests.yaml/badge.svg)](https://github.com/zaffka/rutax/actions/workflows/tests.yaml)
 
 Пакет `rutax` предоставляет функциональность для валидации и парсинга ИНН (Идентификационного Номера Налогоплательщика, TaxID) Российской Федерации.
 

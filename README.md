@@ -1,37 +1,35 @@
-# Пакет валидации Российского ИНН (TaxID)
+# Russian TaxID (TIN, INN) Validation Package
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/zaffka/rutax.svg)](https://pkg.go.dev/github.com/zaffka/rutax)
-[![Go Report Card](https://goreportcard.com/badge/github.com/zaffka/rutax)](https://goreportcard.com/report/github.com/zaffka/rutax)
+[![Go Reference](https://pkg.go.dev/badge/github.com/zaffka/rutax.svg)](https://pkg.go.dev/github.com/zaffka/rutax)  
+[![Go Report Card](https://goreportcard.com/badge/github.com/zaffka/rutax)](https://goreportcard.com/report/github.com/zaffka/rutax)  
 [![Tests](https://github.com/zaffka/rutax/actions/workflows/tests.yaml/badge.svg)](https://github.com/zaffka/rutax/actions/workflows/tests.yaml)
 
-Пакет `rutax` предоставляет функциональность для валидации и парсинга ИНН (Идентификационного Номера Налогоплательщика, TaxID) Российской Федерации.
+The `rutax` package provides functionality for validating and parsing Russian Tax Identification Numbers (INN - Идентификационный Номер Налогоплательщика, TIN - Tax Identification Number).
 
-## Особенности
+## Features
 
-- Парсинг из строки и валидация ИНН физических и юридических лиц
-- Проверка контрольных сумм согласно официальному алгоритму
+- Parsing and validation of TaxID for individuals and legal entities
+- Checksum verification according to the official algorithm
 
-
-## Установка
+## Installation
 
 ```bash
 go get github.com/zaffka/rutax@latest
 ```
 
-## Использование
+## Usage
 #### `rutax.ParseID(innStr string) (rutax.ID, error)`
 
-Основная функция пакета:
-1. Проверяет соответствие строки формату ИНН
-1. Проверяет контрольные суммы в ключевых позициях разбираемой строки
-1. Возвращает структуру с данными ИНН
+Main package function:
+1. Verifies string format compliance with INN requirements
+2. Validates checksums at key positions in the parsed string
+3. Returns a structure with INN data
 
-Возвращаемая структура `ID` содержит:
-- `Num` - валидированный номер ИНН
-- `IsLegal` - флаг принадлежности к юридическому лицу
+The returned `ID` structure contains:
+- `Num` - validated INN(TIN) number
+- `IsLegal` - flag indicating whether it belongs to a legal entity
 
-
-Пример:
+Example:
 ```go
 package main
 
@@ -41,25 +39,24 @@ import (
 )
 
 func main() {
-	// Парсинг ИНН
+	// Parsing TaxID
 	id, err := rutax.ParseID("7710140679")
 	if err != nil {
-		fmt.Println("Ошибка:", err)
-
+		fmt.Println("Error:", err)
+		
 		return
 	}
 
-	fmt.Printf("ИНН: %s, Юр.лицо: %v\n", id.Num, id.IsLegal)
+	fmt.Printf("INN: %s, Legal entity: %v\n", id.Num, id.IsLegal)
 }
 ```
 
-### Ошибки
+### Errors
 
-Пакет возвращает следующие типы ошибок:
-- `ErrIDIncorrect` - ошибка формата ИНН (длина, символы чисел)
-- `ErrChecksumFailed` - ошибка контрольной суммы
+The package returns the following error types:
+- `ErrIDIncorrect` - INN format error (length, numeric characters)
+- `ErrChecksumFailed` - checksum validation error
 
-
-## Лицензия
+## License
 
 MIT

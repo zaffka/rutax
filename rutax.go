@@ -7,33 +7,33 @@ import (
 )
 
 const (
-	personalLen = 12 // Длина ИНН для физического лица или ИП.
-	legalLen    = 10 // Длина ИНН для юридического лица.
+	personalLen = 12 // Length of TIN(Tax Identification Number) for individuals or sole proprietors.
+	legalLen    = 10 // Length of TIN(Tax Identification Number) for legal entities.
 )
 
-// ID представляет ИНН с информацией о его типе.
+// ID represents a Tax Identification Number (TIN) with information about its type.
 type ID struct {
-	Num     string `json:"num,omitempty"`      // Номер ИНН.
-	IsLegal bool   `json:"is_legal,omitempty"` // Является ли юридическим лицом.
+	Num     string `json:"num,omitempty"`      // TIN number.
+	IsLegal bool   `json:"is_legal,omitempty"` // Whether it belongs to a legal entity.
 }
 
 var (
-	// Регулярное выражение для проверки формата ИНН.
+	// Regular expression for TIN format validation.
 	taxIDexp = regexp.MustCompile(`^\d{10}(\d{2})?$`)
 
-	// Весовые коэффициенты для расчета контрольных сумм.
+	// Weight coefficients for checksum calculation.
 	weights = []int32{3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8}
 
-	// Ошибки валидации.
-	ErrIDIncorrect    = errors.New("некорректный формат ИНН")
-	ErrChecksumFailed = errors.New("ошибка контрольной суммы")
+	// Validation errors.
+	ErrIDIncorrect    = errors.New("incorrect TIN format")
+	ErrChecksumFailed = errors.New("checksum error")
 )
 
-// ParseID парсит и валидирует ИНН.
+// ParseID parses and validates a TIN.
 func ParseID(taxID string) (ID, error) {
-	// Проверка базового формата.
+	// Basic format check.
 	if !taxIDexp.MatchString(taxID) {
-		return ID{}, fmt.Errorf("%w: не соответствует формату", ErrIDIncorrect)
+		return ID{}, fmt.Errorf("%w: format mismatch", ErrIDIncorrect)
 	}
 
 	runes := []rune(taxID)
@@ -43,23 +43,23 @@ func ParseID(taxID string) (ID, error) {
 
 	switch length {
 	case personalLen:
-		// Проверка первой контрольной цифры (11-я позиция).
+		// First checksum digit verification (11th position).
 		sum := checksum(runes[:length-2], weights[1:])
 		if runes[length-2]-'0' != sum {
-			return ID{}, fmt.Errorf("%w: первая контрольная сумма не совпадает", ErrChecksumFailed)
+			return ID{}, fmt.Errorf("%w: first checksum mismatch", ErrChecksumFailed)
 		}
 
-		// Проверка второй контрольной цифры (12-я позиция).
+		// Second checksum digit verification (12th position).
 		sum = checksum(runes[:length-1], weights)
 		if runes[length-1]-'0' != sum {
-			return ID{}, fmt.Errorf("%w: вторая контрольная сумма не совпадает", ErrChecksumFailed)
+			return ID{}, fmt.Errorf("%w: second checksum mismatch", ErrChecksumFailed)
 		}
 
 	case legalLen:
-		// Проверка контрольной цифры для юр.лица (10-я позиция).
+		// Checksum digit verification for legal entities (10th position).
 		sum := checksum(runes[:length-1], weights[2:])
 		if runes[length-1]-'0' != sum {
-			return ID{}, fmt.Errorf("%w: контрольная сумма не совпадает", ErrChecksumFailed)
+			return ID{}, fmt.Errorf("%w: checksum mismatch", ErrChecksumFailed)
 		}
 		id.IsLegal = true
 	}
@@ -67,7 +67,7 @@ func ParseID(taxID string) (ID, error) {
 	return id, nil
 }
 
-// checksum вычисляет контрольную сумму для указанных рун и весовых коэффициентов.
+// checksum calculates the checksum for given runes and weight coefficients.
 func checksum(runes []rune, weights []int32) int32 {
 	var sum int32
 	for pos, char := range runes {
